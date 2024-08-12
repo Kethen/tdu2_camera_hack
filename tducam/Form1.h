@@ -623,7 +623,7 @@ namespace tducam {
 						if(optr && (oviewid > 18 && oviewid < 25)){
 							SetByte(optr+ off_fov, (char)(fov));
 							SetByte(optr+ off_fov+1, (char)(sfov));
-							SetBytes(optr+0x560, mover, 0x30);
+							SetBytes(optr+0x5a0, mover, 0x30);
 							SetBytes(optr+0x300, sl,0x4);
 							if(oviewid == 20 || oviewid == 21)
 							{
@@ -662,7 +662,7 @@ namespace tducam {
 
 
 						//cam changed, load initial values
-						GetBytes(cptr+0x560,mover,0x30);
+						GetBytes(cptr+0x5a0,mover,0x30);
 						fov=(float)GetByte(cptr+ off_fov);
 						sfov=(float)GetByte(cptr+ off_fov+1);
 						GetBytes(cptr+0x300,sl,0x4);
@@ -791,7 +791,7 @@ private: System::Void Form1_FormClosed(System::Object^  sender, System::Windows:
 					if(optr && (oviewid > 18 && oviewid < 25)){
 						SetByte(optr+ off_fov, (char)(fov));
 						SetByte(optr+ off_fov+1, (char)(sfov));
-						SetBytes(optr+0x560, mover, 0x30);
+						SetBytes(optr+0x5a0, mover, 0x30);
 						SetBytes(optr+0x300, sl,0x4);
 						if(oviewid == 20 || oviewid == 21)
 						{
@@ -909,12 +909,12 @@ void tirthread()
 
 						if(check3 == true && (viewid == 23 || viewid == 24)){
 							if(didmover==false){
-								SetBytesSafe(cptr+0x560, mmover, 0x30);
+								SetBytesSafe(cptr+0x5a0, mmover, 0x30);
 								didmover = true;
 							}
 						}else{
 							if(didmover==false){
-								SetBytesSafe(cptr+0x560, mover, 0x30);
+								SetBytesSafe(cptr+0x5a0, mover, 0x30);
 								didmover = true;
 							}
 						}
