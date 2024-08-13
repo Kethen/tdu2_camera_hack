@@ -17,6 +17,9 @@ bool check1 = false;
 bool check2 = false;
 bool check3 = false;
 bool check4 = false;
+bool disable_speed_vibration = false;
+bool disable_rev_vibration = false;
+bool disable_offroad_vibration = false;
 
 FILE* fl = NULL;
 D3DXMATRIX tMat;
@@ -51,8 +54,17 @@ struct guidata
 	char ext2;
 	char ext3;
 	char ext4;
+
 };
 guidata gd={0};
+
+struct guidata_new
+{
+	char disable_speed_vibration;
+	char disable_rev_vibration;
+	char disable_offroad_vibration;
+};
+guidata_new gdn = { 0 };
 
 struct camerad
 {
@@ -190,6 +202,9 @@ namespace tducam {
 	private: System::Windows::Forms::GroupBox^  groupBox4;
 	private: System::Windows::Forms::Label^  label7;
 	private: System::Windows::Forms::Timer^  timer2;
+	private: System::Windows::Forms::CheckBox^ checkBox5;
+	private: System::Windows::Forms::CheckBox^ checkBox7;
+	private: System::Windows::Forms::CheckBox^ checkBox6;
 
 	private: System::ComponentModel::IContainer^  components;
 	protected: 
@@ -213,6 +228,9 @@ namespace tducam {
 			this->linkLabel1 = (gcnew System::Windows::Forms::LinkLabel());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->checkBox7 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox6 = (gcnew System::Windows::Forms::CheckBox());
+			this->checkBox5 = (gcnew System::Windows::Forms::CheckBox());
 			this->checkBox4 = (gcnew System::Windows::Forms::CheckBox());
 			this->checkBox3 = (gcnew System::Windows::Forms::CheckBox());
 			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
@@ -246,7 +264,7 @@ namespace tducam {
 			// linkLabel1
 			// 
 			this->linkLabel1->AutoSize = true;
-			this->linkLabel1->Location = System::Drawing::Point(322, 309);
+			this->linkLabel1->Location = System::Drawing::Point(351, 376);
 			this->linkLabel1->Name = L"linkLabel1";
 			this->linkLabel1->Size = System::Drawing::Size(86, 13);
 			this->linkLabel1->TabIndex = 1;
@@ -265,6 +283,9 @@ namespace tducam {
 			// 
 			// groupBox1
 			// 
+			this->groupBox1->Controls->Add(this->checkBox7);
+			this->groupBox1->Controls->Add(this->checkBox6);
+			this->groupBox1->Controls->Add(this->checkBox5);
 			this->groupBox1->Controls->Add(this->checkBox4);
 			this->groupBox1->Controls->Add(this->checkBox3);
 			this->groupBox1->Controls->Add(this->checkBox2);
@@ -275,10 +296,46 @@ namespace tducam {
 			this->groupBox1->Controls->Add(this->trackBar1);
 			this->groupBox1->Location = System::Drawing::Point(280, 12);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size(128, 213);
+			this->groupBox1->Size = System::Drawing::Size(157, 280);
 			this->groupBox1->TabIndex = 7;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"TrackIR";
+			// 
+			// checkBox7
+			// 
+			this->checkBox7->AutoSize = true;
+			this->checkBox7->Checked = true;
+			this->checkBox7->CheckState = System::Windows::Forms::CheckState::Checked;
+			this->checkBox7->Location = System::Drawing::Point(6, 253);
+			this->checkBox7->Name = L"checkBox7";
+			this->checkBox7->Size = System::Drawing::Size(143, 17);
+			this->checkBox7->TabIndex = 17;
+			this->checkBox7->Text = L"Disable Offroad Vibration";
+			this->checkBox7->UseVisualStyleBackColor = true;
+			// 
+			// checkBox6
+			// 
+			this->checkBox6->AutoSize = true;
+			this->checkBox6->Checked = true;
+			this->checkBox6->CheckState = System::Windows::Forms::CheckState::Checked;
+			this->checkBox6->Location = System::Drawing::Point(6, 230);
+			this->checkBox6->Name = L"checkBox6";
+			this->checkBox6->Size = System::Drawing::Size(128, 17);
+			this->checkBox6->TabIndex = 16;
+			this->checkBox6->Text = L"Disable Rev Vibration";
+			this->checkBox6->UseVisualStyleBackColor = true;
+			// 
+			// checkBox5
+			// 
+			this->checkBox5->AutoSize = true;
+			this->checkBox5->Checked = true;
+			this->checkBox5->CheckState = System::Windows::Forms::CheckState::Checked;
+			this->checkBox5->Location = System::Drawing::Point(6, 207);
+			this->checkBox5->Name = L"checkBox5";
+			this->checkBox5->Size = System::Drawing::Size(139, 17);
+			this->checkBox5->TabIndex = 15;
+			this->checkBox5->Text = L"Disable Speed Vibration";
+			this->checkBox5->UseVisualStyleBackColor = true;
 			// 
 			// checkBox4
 			// 
@@ -345,7 +402,7 @@ namespace tducam {
 			this->trackBar2->Maximum = 40;
 			this->trackBar2->Minimum = -10;
 			this->trackBar2->Name = L"trackBar2";
-			this->trackBar2->Size = System::Drawing::Size(115, 45);
+			this->trackBar2->Size = System::Drawing::Size(145, 45);
 			this->trackBar2->TabIndex = 9;
 			this->trackBar2->TickStyle = System::Windows::Forms::TickStyle::TopLeft;
 			this->trackBar2->Value = 1;
@@ -366,7 +423,7 @@ namespace tducam {
 			this->trackBar1->Maximum = 40;
 			this->trackBar1->Minimum = -10;
 			this->trackBar1->Name = L"trackBar1";
-			this->trackBar1->Size = System::Drawing::Size(115, 45);
+			this->trackBar1->Size = System::Drawing::Size(145, 45);
 			this->trackBar1->TabIndex = 7;
 			this->trackBar1->TickStyle = System::Windows::Forms::TickStyle::TopLeft;
 			this->trackBar1->Value = 1;
@@ -426,9 +483,9 @@ namespace tducam {
 			// groupBox4
 			// 
 			this->groupBox4->Controls->Add(this->label7);
-			this->groupBox4->Location = System::Drawing::Point(280, 231);
+			this->groupBox4->Location = System::Drawing::Point(280, 298);
 			this->groupBox4->Name = L"groupBox4";
-			this->groupBox4->Size = System::Drawing::Size(127, 75);
+			this->groupBox4->Size = System::Drawing::Size(157, 75);
 			this->groupBox4->TabIndex = 10;
 			this->groupBox4->TabStop = false;
 			this->groupBox4->Text = L"Game Info";
@@ -449,7 +506,7 @@ namespace tducam {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(421, 340);
+			this->ClientSize = System::Drawing::Size(449, 398);
 			this->Controls->Add(this->groupBox4);
 			this->Controls->Add(this->groupBox3);
 			this->Controls->Add(this->groupBox2);
@@ -488,9 +545,13 @@ namespace tducam {
 				gd.lcam = checkBox2->Checked;
 				gd.hcam = checkBox3->Checked;
 				gd.tlcam = checkBox4->Checked;
+				gdn.disable_speed_vibration = checkBox5->Checked;
+				gdn.disable_rev_vibration = checkBox6->Checked;
+				gdn.disable_offroad_vibration = checkBox7->Checked;
 				fwrite(&gd,sizeof(guidata),1,fl);
 				fwrite(&modcamera,sizeof(camerad),10000*25,fl);
 				fwrite(&modcameran,sizeof(cameradn),10000*25,fl);
+				fwrite(&gdn,sizeof(guidata_new),1,fl);
 				fclose(fl);
 			}
 		}
@@ -502,6 +563,7 @@ namespace tducam {
 				fread(&gd,sizeof(guidata),1,fl);
 				fread(&modcamera,sizeof(camerad),10000*25,fl);
 				fread(&modcameran,sizeof(cameradn),10000*25,fl);
+				fread(&gdn, sizeof(guidata_new), 10000 * 25, fl);
 				fclose(fl);
 			}
 				trackBar1->Value = gd.sl1;
@@ -510,6 +572,9 @@ namespace tducam {
 				checkBox2->Checked = gd.lcam;
 				checkBox3->Checked = gd.hcam;
 				checkBox4->Checked = gd.tlcam;
+				checkBox5->Checked = gdn.disable_speed_vibration;
+				checkBox6->Checked = gdn.disable_rev_vibration;
+				checkBox7->Checked = gdn.disable_offroad_vibration;
 				label5->Text = "Translate: " + trackBar2->Value.ToString();
 				label4->Text = "Rotate: " + trackBar1->Value.ToString();
 		}
@@ -537,6 +602,46 @@ namespace tducam {
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 
 			 }
+	private: void PatchVibration(){
+		static UINT32 sv_byte_addr = 0x00c8f042;
+		UINT8 sv_byte = 0x77;
+		if (disable_speed_vibration) {
+			sv_byte = 0xeb;
+		}
+		UINT8 current_sv_byte = GetByte(sv_byte_addr);
+		if (current_sv_byte != sv_byte) {
+			SuspendProcess();
+			SetByte(sv_byte_addr, sv_byte);
+			ResumeProcess();
+		}
+
+		static UINT32 rv_byte_addr = 0x00c8efea;
+		UINT8 rv_byte = 0x76;
+		if (disable_rev_vibration) {
+			rv_byte = 0xeb;
+		}
+		UINT8 current_rv_byte = GetByte(rv_byte_addr);
+		if (current_rv_byte != rv_byte) {
+			SuspendProcess();
+			SetByte(rv_byte_addr, rv_byte);
+			ResumeProcess();
+		}
+
+		static UINT32 ov_bytes_addr = 0x00c8f128;
+		static UINT8 ov_bytes[] = { 0x0f, 0x84, 0xa2, 0x00, 0x00, 0x00 };
+		static UINT8 ov_bytes_patched[] = { 0xe9, 0xa3, 0x00, 0x00, 0x00, 0x00 };
+		UINT8 ov_bytes_target[] = { 0x0f, 0x84, 0xa2, 0x00, 0x00, 0x00 };
+		if (disable_offroad_vibration) {
+			memcpy(ov_bytes_target, ov_bytes_patched, 6);
+		}
+		UINT8 current_ov_bytes[6];
+		GetBytes(ov_bytes_addr, current_ov_bytes, 6);
+		if (memcmp(current_ov_bytes, ov_bytes_target, 6) != 0) {
+			SuspendProcess();
+			SetBytes(ov_bytes_addr, ov_bytes_target, 6);
+			ResumeProcess();
+		}
+	}
 	private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
 
 				tbar1 = trackBar1->Value;
@@ -546,6 +651,10 @@ namespace tducam {
 				check2 = checkBox2->Checked;
 				check3 = checkBox3->Checked;
 				check4 = checkBox4->Checked;
+				disable_speed_vibration = checkBox5->Checked;
+				disable_rev_vibration = checkBox6->Checked;
+				disable_offroad_vibration = checkBox7->Checked;
+				
 				//read tirdata
 				 //low priority stuff
 				if(GetTickCount()-ticks > 100)
@@ -775,9 +884,10 @@ namespace tducam {
 						}
 					}else{
 						kd=false;
-					}	
+					}
+
+					PatchVibration();
 				}
-			
 			 }
 	private: System::Void linkLabel1_LinkClicked(System::Object^  sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^  e) {
 				ProcessStartInfo ^ sInfo = gcnew ProcessStartInfo(e->Link->LinkData->ToString());
@@ -807,6 +917,12 @@ private: System::Void Form1_FormClosed(System::Object^  sender, System::Windows:
 							SetFloat(optr+0x558,origcamera.OriOffsetZ);
 						}
 					}
+
+					//unpatch vibration
+					disable_speed_vibration = false;
+					disable_rev_vibration = false;
+					disable_offroad_vibration = false;
+					PatchVibration();
 			 }
 
 				try{shutdown();}catch(...){}
@@ -956,6 +1072,5 @@ end:
 
 };
 }
-		
 	
 

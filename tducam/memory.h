@@ -338,13 +338,32 @@ DWORD FutureScan(void)
 
 }
 
+// https://stackoverflow.com/questions/11010165/how-to-suspend-resume-a-process-in-windows
+// https://ntopcode.wordpress.com/2018/01/16/anatomy-of-the-thread-suspension-mechanism-in-windows-windows-internals/
+typedef LONG(NTAPI* NtSuspendProcess)(IN HANDLE ProcessHandle);
+NtSuspendProcess _SuspendProcess = NULL;
+void SuspendProcess() {
+	if(_SuspendProcess == NULL){
+		_SuspendProcess = (NtSuspendProcess)GetProcAddress(GetModuleHandleA("ntdll"), "NtSuspendProcess");
+	}
+	hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
+	_SuspendProcess(hProcess);
+	::CloseHandle(hProcess);
+}
 
-
+NtSuspendProcess _ResumeProcess = NULL;
+void ResumeProcess() {
+	if (_ResumeProcess == NULL) {
+		_ResumeProcess = (NtSuspendProcess)GetProcAddress(GetModuleHandleA("ntdll"), "NtResumeProcess");
+	}
+	hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
+	_ResumeProcess(hProcess);
+	::CloseHandle(hProcess);
+}
 
 void SaveAll(char * arr)
 {
 	//fstream ofs;
 	//ofs.open(" ");
 	//ofs.write((char*)arr,512);
-
 }
